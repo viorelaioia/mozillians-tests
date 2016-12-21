@@ -4,6 +4,7 @@
 
 import pytest
 import requests
+from tempmail import TempMail
 
 
 @pytest.fixture(scope='session')
@@ -20,14 +21,10 @@ def selenium(selenium):
 
 
 @pytest.fixture
-def persona_test_user():
-    return requests.get('http://personatestuser.org/email/').json()
-
-
-@pytest.fixture
-def new_user(persona_test_user):
-    user = {'email': persona_test_user['email'],
-            'password': persona_test_user['pass']}
+def new_user():
+    tempmail = TempMail()
+    email = tempmail.get_email_address()
+    user = {'email': email}
     return user
 
 
@@ -49,3 +46,5 @@ def private_user(stored_users):
 @pytest.fixture
 def unvouched_user(stored_users):
     return stored_users['unvouched']
+
+

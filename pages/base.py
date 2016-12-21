@@ -4,7 +4,6 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.select import Select
@@ -19,6 +18,10 @@ class Base(Page):
 
     _pending_approval_locator = (By.ID, 'pending-approval')
     _account_created_successfully_locator = (By.CSS_SELECTOR, 'div.alert:nth-child(2)')
+    _login_with_email_button_locator = (By.CSS_SELECTOR, '.auth0-lock-passwordless-button.auth0-lock-passwordless-big-button')
+    _email_input = (By.CSS_SELECTOR, '.auth0-lock-passwordless-pane>div>div>input')
+    _send_email_button_locator = (By.CSS_SELECTOR, '.auth0-lock-passwordless-submit')
+    _email_sent_successful_message_locator = (By.CSS_SELECTOR, '.auth0-lock-passwordless-confirmation>p')
 
     # Not logged in
     _browserid_login_locator = (By.ID, 'nav-login')
@@ -51,22 +54,25 @@ class Base(Page):
 
     def login(self, email, password):
         self.click_browserid_login()
-        from browserid import BrowserID
-        pop_up = BrowserID(self.selenium, self.timeout)
-        pop_up.sign_in(email, password)
+        from pages.authentification import Authentification
+        authentification = Authentification(self.base_url, self.selenium)
+        authentification.sign_in(email)
+        link = authentification.get_link(email, password)
+        from pages.home_page import Home
+        home_page = Home(link, self.selenium)
         WebDriverWait(self.selenium, self.timeout).until(lambda s: self.is_user_loggedin)
+        return home_page
 
-    def create_new_user(self, email, password):
+    def create_new_user(self, email):
         self.click_browserid_login()
-        from browserid import BrowserID
-        pop_up = BrowserID(self.selenium, self.timeout)
-        pop_up.sign_in(email, password)
-
-        WebDriverWait(self.selenium, self.timeout).until(lambda s: self.is_user_loggedin)
+        from pages.authentification import Authentification
+        authentification = Authentification(self.base_url, self.selenium)
+        authentification.sign_in(email)
+        link = authentification.get_link_from_new_user_email(email)
         from pages.register import Register
-        return Register(self.base_url, self.selenium)
-
-    # Logged in
+        register = Register(link, self.selenium)
+        WebDriverWait(self.selenium, self.timeout).until(lambda s: self.is_user_loggedin)
+        return register
 
     @property
     def header(self):

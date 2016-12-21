@@ -25,6 +25,11 @@ class Register(Base):
     _recaptcha_checkbox_locator = (By.CSS_SELECTOR, '.recaptcha-checkbox-checkmark')
     _recaptcha_checkbox_checked = (By.CSS_SELECTOR, '.recaptcha-checkbox-checked')
 
+    def __init__(self, base_url, selenium, open_url=True):
+        Base.__init__(self, base_url, selenium)
+        if open_url:
+            self.selenium.get(self.base_url)
+
     @property
     def error_message(self):
         return self.selenium.find_element(*self._error_locator).text
