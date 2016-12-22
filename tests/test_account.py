@@ -16,7 +16,7 @@ class TestAccount:
     @pytest.mark.nondestructive
     def test_login_logout(self, base_url, selenium, vouched_user):
         home_page = Home(base_url, selenium)
-        home_page.login(vouched_user['email'], vouched_user['password'])
+        home_page.login(vouched_user['email'])
         assert home_page.header.is_logout_menu_item_present
         home_page.header.click_logout_menu_item()
         assert home_page.is_browserid_link_present
@@ -25,7 +25,7 @@ class TestAccount:
     @pytest.mark.nondestructive
     def test_logout_verify_bid(self, base_url, selenium, vouched_user):
         home_page = Home(base_url, selenium)
-        home_page.login(vouched_user['email'], vouched_user['password'])
+        home_page.login(vouched_user['email'])
         assert home_page.header.is_logout_menu_item_present
         home_page.logout_using_url()
 

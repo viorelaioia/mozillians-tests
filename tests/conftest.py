@@ -3,7 +3,7 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import pytest
-import requests
+import uuid
 
 
 @pytest.fixture(scope='session')
@@ -20,15 +20,13 @@ def selenium(selenium):
 
 
 @pytest.fixture
-def persona_test_user():
-    return requests.get('http://personatestuser.org/email/').json()
+def new_email():
+    return 'mozillians_{0}@restmail.net'.format(uuid.uuid1())
 
 
 @pytest.fixture
-def new_user(persona_test_user):
-    user = {'email': persona_test_user['email'],
-            'password': persona_test_user['pass']}
-    return user
+def new_user(new_email):
+    return {'email': new_email, 'password': 'password'}
 
 
 @pytest.fixture

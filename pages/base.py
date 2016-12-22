@@ -4,12 +4,12 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.select import Select
 from selenium.webdriver.support.ui import WebDriverWait
 
+from pages import restmail
 from pages.page import Page
 
 
@@ -19,6 +19,10 @@ class Base(Page):
 
     _pending_approval_locator = (By.ID, 'pending-approval')
     _account_created_successfully_locator = (By.CSS_SELECTOR, 'div.alert:nth-child(2)')
+    _login_with_email_button_locator = (By.CSS_SELECTOR, '.auth0-lock-passwordless-button.auth0-lock-passwordless-big-button')
+    _email_input = (By.CSS_SELECTOR, '.auth0-lock-passwordless-pane>div>div>input')
+    _send_email_button_locator = (By.CSS_SELECTOR, '.auth0-lock-passwordless-submit')
+    _email_sent_successful_message_locator = (By.CSS_SELECTOR, '.auth0-lock-passwordless-confirmation>p')
 
     # Not logged in
     _browserid_login_locator = (By.ID, 'nav-login')
@@ -49,24 +53,28 @@ class Base(Page):
     def click_browserid_login(self):
         self.selenium.find_element(*self._browserid_login_locator).click()
 
-    def login(self, email, password):
+    def login(self, email):
         self.click_browserid_login()
-        from browserid import BrowserID
-        pop_up = BrowserID(self.selenium, self.timeout)
-        pop_up.sign_in(email, password)
+        from pages.auth_zero import AuthZero
+        auth_zero = AuthZero(self.base_url, self.selenium)
+        auth_zero.request_login_link(email)
+        login_link = restmail.get_login_link(email)
+        self.open(login_link)
         WebDriverWait(self.selenium, self.timeout).until(lambda s: self.is_user_loggedin)
 
-    def create_new_user(self, email, password):
+    def create_new_user(self, email):
         self.click_browserid_login()
-        from browserid import BrowserID
-        pop_up = BrowserID(self.selenium, self.timeout)
-        pop_up.sign_in(email, password)
-
+        from pages.auth_zero import AuthZero
+        auth_zero = AuthZero(self.base_url, self.selenium)
+        auth_zero.request_login_link(email)
+        login_link = restmail.get_login_link(email)
+        self.open(login_link)
         WebDriverWait(self.selenium, self.timeout).until(lambda s: self.is_user_loggedin)
         from pages.register import Register
         return Register(self.base_url, self.selenium)
 
-    # Logged in
+    def open(self, url):
+        self.selenium.get(url)
 
     @property
     def header(self):
