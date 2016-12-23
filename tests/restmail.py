@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -9,22 +7,21 @@ import time
 import requests
 
 
-def get_login_link(username, message_count=1, timeout=60):
+def get_mail(username, message_count=1, timeout=60):
     username = username.partition('@restmail.net')[0]
     end_time = time.time() + timeout
+    response = requests.delete(
+        'https://restmail.net/mail/%s' % username)
+    if response != 200:
+        response.raise_for_status()
     while (True):
         response = requests.get(
-            'http://restmail.net/mail/%s' % username,
-            verify=False)
+            'https://restmail.net/mail/%s' % username)
+        if response != 200:
+            response.raise_for_status()
         restmail = json.loads(response.content)
-        requests.delete(
-            'http://restmail.net/mail/%s' % username,
-            verify=False)
         if len(restmail) == message_count:
-            mail_content = restmail[0]['text'].replace('\n', ' ').replace('amp;', '').split(" ")
-            for link in mail_content:
-                if link.startswith("http"):
-                    return link
+            return restmail
         time.sleep(0.5)
         if (time.time() > end_time):
             break

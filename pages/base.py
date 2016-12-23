@@ -9,8 +9,8 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.select import Select
 from selenium.webdriver.support.ui import WebDriverWait
 
-from pages import restmail
 from pages.page import Page
+from tests import conftest
 
 
 class Base(Page):
@@ -19,13 +19,9 @@ class Base(Page):
 
     _pending_approval_locator = (By.ID, 'pending-approval')
     _account_created_successfully_locator = (By.CSS_SELECTOR, 'div.alert:nth-child(2)')
-    _login_with_email_button_locator = (By.CSS_SELECTOR, '.auth0-lock-passwordless-button.auth0-lock-passwordless-big-button')
-    _email_input = (By.CSS_SELECTOR, '.auth0-lock-passwordless-pane>div>div>input')
-    _send_email_button_locator = (By.CSS_SELECTOR, '.auth0-lock-passwordless-submit')
-    _email_sent_successful_message_locator = (By.CSS_SELECTOR, '.auth0-lock-passwordless-confirmation>p')
 
     # Not logged in
-    _browserid_login_locator = (By.ID, 'nav-login')
+    _sign_in_button_locator = (By.ID, 'nav-login')
 
     @property
     def page_title(self):
@@ -43,38 +39,29 @@ class Base(Page):
     # Not logged in
 
     @property
-    def is_browserid_link_present(self):
-        return self.is_element_present(*self._browserid_login_locator)
+    def is_sign_in_button_present(self):
+        return self.is_element_present(*self._sign_in_button_locator)
 
     @property
     def is_user_loggedin(self):
         return self.is_element_present(*self._logout_locator)
 
-    def click_browserid_login(self):
-        self.selenium.find_element(*self._browserid_login_locator).click()
+    def click_sign_in_button(self):
+        self.selenium.find_element(*self._sign_in_button_locator).click()
 
     def login(self, email):
-        self.click_browserid_login()
+        self.click_sign_in_button()
         from pages.auth_zero import AuthZero
         auth_zero = AuthZero(self.base_url, self.selenium)
         auth_zero.request_login_link(email)
-        login_link = restmail.get_login_link(email)
-        self.open(login_link)
+        login_link = conftest.login_link(email)
+        self.selenium.get(login_link)
         WebDriverWait(self.selenium, self.timeout).until(lambda s: self.is_user_loggedin)
 
     def create_new_user(self, email):
-        self.click_browserid_login()
-        from pages.auth_zero import AuthZero
-        auth_zero = AuthZero(self.base_url, self.selenium)
-        auth_zero.request_login_link(email)
-        login_link = restmail.get_login_link(email)
-        self.open(login_link)
-        WebDriverWait(self.selenium, self.timeout).until(lambda s: self.is_user_loggedin)
+        self.login(email)
         from pages.register import Register
         return Register(self.base_url, self.selenium)
-
-    def open(self, url):
-        self.selenium.get(url)
 
     @property
     def header(self):

@@ -5,6 +5,8 @@
 import pytest
 import uuid
 
+from tests import restmail
+
 
 @pytest.fixture(scope='session')
 def session_capabilities(session_capabilities):
@@ -26,7 +28,7 @@ def new_email():
 
 @pytest.fixture
 def new_user(new_email):
-    return {'email': new_email, 'password': 'password'}
+    return {'email': new_email}
 
 
 @pytest.fixture
@@ -47,3 +49,12 @@ def private_user(stored_users):
 @pytest.fixture
 def unvouched_user(stored_users):
     return stored_users['unvouched']
+
+
+@pytest.fixture
+def login_link(username):
+    mail = restmail.get_mail(username)
+    mail_content = mail[0]['text'].replace('\n', ' ').replace('amp;', '').split(" ")
+    for link in mail_content:
+        if link.startswith("https"):
+            return link
