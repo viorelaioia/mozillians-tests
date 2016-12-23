@@ -4,13 +4,14 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+from tests import conftest
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.select import Select
 from selenium.webdriver.support.ui import WebDriverWait
 
 from pages.page import Page
-from tests import conftest
+from pages.auth0 import Auth0
 
 
 class Base(Page):
@@ -51,9 +52,8 @@ class Base(Page):
 
     def login(self, email):
         self.click_sign_in_button()
-        from pages.auth_zero import AuthZero
-        auth_zero = AuthZero(self.base_url, self.selenium)
-        auth_zero.request_login_link(email)
+        auth0 = Auth0(self.base_url, self.selenium)
+        auth0.request_login_link(email)
         login_link = conftest.login_link(email)
         self.selenium.get(login_link)
         WebDriverWait(self.selenium, self.timeout).until(lambda s: self.is_user_loggedin)

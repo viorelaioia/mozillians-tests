@@ -6,7 +6,7 @@ from selenium.webdriver.common.by import By
 from pages.page import Page
 
 
-class AuthZero(Page):
+class Auth0(Page):
 
     _login_with_email_button_locator = (By.CSS_SELECTOR, '.auth0-lock-passwordless-button.auth0-lock-passwordless-big-button')
     _email_input_locator = (By.CSS_SELECTOR, '.auth0-lock-passwordless-pane>div>div>input')
