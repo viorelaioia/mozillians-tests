@@ -12,6 +12,8 @@ from pages.home_page import Home
 
 class TestGroup:
 
+    @pytest.mark.xfail("'mozillians.org' in config.getvalue('base_url')",
+                       reason="Bug 1254083 - Change profile settings nav menu to use bootstrap's")
     @pytest.mark.credentials
     def test_group_description_edit(self, base_url, selenium, vouched_user):
         home_page = Home(base_url, selenium)
@@ -39,6 +41,8 @@ class TestGroup:
         assert new_group_description == group_info.description
         assert new_group_irc_channel == group_info.irc_channel
 
+    @pytest.mark.xfail("'mozillians.org' in config.getvalue('base_url')",
+                       reason="Bug 1254083 - Change profile settings nav menu to use bootstrap's")
     @pytest.mark.credentials
     def test_group_deletion_confirmation(self, base_url, selenium, vouched_user):
         home_page = Home(base_url, selenium)
@@ -57,6 +61,8 @@ class TestGroup:
         groups_page = delete_form.click_delete_group()
         assert groups_page.is_group_deletion_alert_present
 
+    @pytest.mark.xfail("'mozillians.org' in config.getvalue('base_url')",
+                       reason="Bug 1254083 - Change profile settings nav menu to use bootstrap's")
     @pytest.mark.credentials
     def test_group_type_change(self, base_url, selenium, vouched_user):
         home_page = Home(base_url, selenium)
@@ -73,6 +79,8 @@ class TestGroup:
         group_type.set_reviewed_group_type()
         assert group_type.is_member_criteria_visible
 
+    @pytest.mark.xfail("'mozillians.org' in config.getvalue('base_url')",
+                       reason="Bug 1254083 - Change profile settings nav menu to use bootstrap's")
     @pytest.mark.credentials
     def test_group_invitations(self, base_url, selenium, vouched_user):
         home_page = Home(base_url, selenium)
