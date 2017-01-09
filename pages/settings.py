@@ -222,8 +222,8 @@ class Settings(Base):
 
     class ExternalAccountsTab(PageRegion):
 
-        _external_accounts_form_locator = (By.CSS_SELECTOR, '#extaccounts>form>div:nth-child(2)')
-        _irc_form_locator = (By.CSS_SELECTOR, '#extaccounts>form>div:nth-child(3)')
+        _external_accounts_form_locator = (By.CSS_SELECTOR, '#extaccounts > form > div:nth-child(2)')
+        _irc_form_locator = (By.CSS_SELECTOR, '#extaccounts > form > div:nth-child(3)')
 
         @property
         def external_accounts_form(self):
