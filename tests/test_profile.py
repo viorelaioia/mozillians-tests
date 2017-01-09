@@ -15,8 +15,6 @@ from pages.link_crawler import LinkCrawler
 
 class TestProfile:
 
-    @pytest.mark.xfail("'mozillians.org' in config.getvalue('base_url')",
-                       reason="Bug 1254083 - Change profile settings nav menu to use bootstrap's")
     @pytest.mark.credentials
     @pytest.mark.nondestructive
     def test_profile_deletion_confirmation(self, base_url, selenium, vouched_user):
@@ -37,8 +35,6 @@ class TestProfile:
         assert confirm_profile_delete_page.is_cancel_button_present
         assert confirm_profile_delete_page.is_delete_button_present
 
-    @pytest.mark.xfail("'mozillians.org' in config.getvalue('base_url')",
-                       reason="Bug 1254083 - Change profile settings nav menu to use bootstrap's")
     @pytest.mark.credentials
     def test_edit_profile_information(self, base_url, selenium, vouched_user):
         home_page = Home(base_url, selenium)
@@ -63,8 +59,6 @@ class TestProfile:
         assert new_full_name == profile_page.name
         assert new_biography == profile_page.biography
 
-    @pytest.mark.xfail("'mozillians.org' in config.getvalue('base_url')",
-                       reason="Bug 1254083 - Change profile settings nav menu to use bootstrap's")
     @pytest.mark.credentials
     def test_skill_addition(self, base_url, selenium, vouched_user):
         home_page = Home(base_url, selenium)
@@ -81,8 +75,6 @@ class TestProfile:
         skills = profile_page.skills
         assert skills.find("hello world") >= 0
 
-    @pytest.mark.xfail("'mozillians.org' in config.getvalue('base_url')",
-                       reason="Bug 1254083 - Change profile settings nav menu to use bootstrap's")
     @pytest.mark.credentials
     def test_skill_deletion(self, base_url, selenium, vouched_user):
         home_page = Home(base_url, selenium)
@@ -161,8 +153,6 @@ class TestProfile:
         random_profile = search_results_page.get_random_profile()
         assert country == random_profile.country
 
-    @pytest.mark.xfail("'mozillians.org' in config.getvalue('base_url')",
-                       reason="Bug 1254083 - Change profile settings nav menu to use bootstrap's")
     @pytest.mark.credentials
     def test_that_non_us_user_can_set_get_involved_date(self, base_url, selenium, vouched_user):
         home_page = Home(base_url, selenium)
@@ -181,8 +171,6 @@ class TestProfile:
         contributions = settings.you_and_mozilla.contributions
         assert selected_date != contributions.month + contributions.year
 
-    @pytest.mark.xfail("'mozillians.org' in config.getvalue('base_url')",
-                       reason="Bug 1254083 - Change profile settings nav menu to use bootstrap's")
     @pytest.mark.credentials
     def test_that_user_can_create_and_delete_group(self, base_url, selenium, vouched_user):
         group_name = (time.strftime('%x-%X'))
@@ -227,8 +215,6 @@ class TestProfile:
         profile_page = home_page.open_user_profile(private_user['name'])
         assert not profile_page.is_groups_present
 
-    @pytest.mark.xfail("'mozillians.org' in config.getvalue('base_url')",
-                       reason="Bug 1254083 - Change profile settings nav menu to use bootstrap's")
     @pytest.mark.credentials
     @pytest.mark.nondestructive
     def test_that_links_in_the_services_page_return_200_code(self, base_url, selenium, vouched_user):
@@ -250,8 +236,6 @@ class TestProfile:
 
         assert 0 == len(bad_urls), u'%s bad links found. ' % len(bad_urls) + ', '.join(bad_urls)
 
-    @pytest.mark.xfail("'mozillians.org' in config.getvalue('base_url')",
-                       reason="Bug 1254083 - Change profile settings nav menu to use bootstrap's")
     @pytest.mark.credentials
     @pytest.mark.nondestructive
     def test_that_user_can_view_external_accounts(self, base_url, selenium, vouched_user):
@@ -262,8 +246,6 @@ class TestProfile:
         assert settings.external_accounts.irc_form.is_displayed
         assert settings.external_accounts.external_accounts_form.is_displayed
 
-    @pytest.mark.xfail("'mozillians.org' in config.getvalue('base_url')",
-                       reason="Bug 1254083 - Change profile settings nav menu to use bootstrap's")
     @pytest.mark.credentials
     def test_that_user_can_add_external_account(self, base_url, selenium, vouched_user):
         home_page = Home(base_url, selenium)
@@ -276,8 +258,6 @@ class TestProfile:
         new_cnt_external_accounts = external_accounts_form.count_external_accounts()
         assert (cnt_external_accounts + 1) == new_cnt_external_accounts
 
-    @pytest.mark.xfail("'mozillians.org' in config.getvalue('base_url')",
-                       reason="Bug 1254083 - Change profile settings nav menu to use bootstrap's")
     @pytest.mark.credentials
     def test_that_user_can_modify_external_accounts_irc_nickname(self, base_url, selenium, vouched_user):
         home_page = Home(base_url, selenium)
@@ -301,8 +281,6 @@ class TestProfile:
         profile_page = home_page.header.click_view_profile_menu_item()
         assert old_nickname == profile_page.irc_nickname
 
-    @pytest.mark.xfail("'mozillians.org' in config.getvalue('base_url')",
-                       reason="Bug 1254083 - Change profile settings nav menu to use bootstrap's")
     @pytest.mark.credentials
     @pytest.mark.nondestructive
     def test_new_user_cannot_see_groups_or_functional_areas(self, base_url, selenium, unvouched_user):
