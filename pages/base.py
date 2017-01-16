@@ -108,6 +108,8 @@ class Base(Page):
             return Search(self.base_url, self.selenium)
 
         def click_options(self):
+            WebDriverWait(self.selenium, self.timeout).until(
+                lambda s: self.is_element_visible(*self._profile_menu_locator))
             self.selenium.find_element(*self._profile_menu_locator).click()
             WebDriverWait(self.selenium, self.timeout).until(lambda s: self.selenium.find_element(*self._dropdown_menu_locator))
 

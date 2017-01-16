@@ -70,7 +70,7 @@ class Search(Base):
 
     class SearchResult(PageRegion):
 
-        _profile_page_link_locator = (By.CSS_SELECTOR, 'a')
+        _profile_page_link_locator = (By.CSS_SELECTOR, 'img')
         _name_locator = (By.CSS_SELECTOR, '.result .details h2')
 
         def open_profile_page(self):

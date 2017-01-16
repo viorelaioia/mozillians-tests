@@ -13,9 +13,6 @@ class TestRegister:
         home_page = Home(base_url, selenium)
         profile = home_page.create_new_user(new_user['email'])
 
-        # Click recaptcha box
-        profile.check_recaptcha()
-
         # Full name
         profile.set_full_name("New MozilliansUser")
 
@@ -26,6 +23,9 @@ class TestRegister:
         profile.check_privacy()
 
         profile_page = profile.click_create_profile_button()
+
+        # Click recaptcha box
+        profile.check_recaptcha()
 
         assert profile_page.was_account_created_successfully
         assert profile_page.is_pending_approval_visible
