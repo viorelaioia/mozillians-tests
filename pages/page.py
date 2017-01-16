@@ -85,6 +85,14 @@ class Page(object):
         except (NoSuchElementException, ElementNotVisibleException):
             return False
 
+    @property
+    def is_page_loaded(self):
+        page_state = self.selenium.execute_script('return document.readyState;')
+        return page_state == 'complete'
+
+    def wait_for_page_loaded(self):
+        WebDriverWait(self.selenium, self.timeout).until(lambda s: self.is_page_loaded)
+
     def return_to_previous_page(self):
         self.selenium.back()
 

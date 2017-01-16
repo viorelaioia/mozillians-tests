@@ -14,7 +14,7 @@ from pages.base import Base
 
 class Profile(Base):
 
-    _profile_photo_locator = (By.CSS_SELECTOR, '.profile-photo img')
+    _profile_photo_locator = (By.CSS_SELECTOR, '#profile-stats > div.profile-photo img')
     _name_locator = (By.CSS_SELECTOR, 'h1.p-name')
     _email_locator = (By.CSS_SELECTOR, '.email')
     _irc_nickname_locator = (By.CSS_SELECTOR, '.nickname')
@@ -22,7 +22,7 @@ class Profile(Base):
     _vouched_by_locator = (By.CSS_SELECTOR, '#profile-info .vouched')
     _biography_locator = (By.CSS_SELECTOR, '#bio > .note > p')
     _skills_locator = (By.ID, 'skills')
-    _groups_locator = (By.ID, 'groups')
+    _groups_locator = (By.CSS_SELECTOR, 'div#groups')
     _languages_locator = (By.ID, 'languages')
     _location_locator = (By.ID, 'location')
     _city_locator = (By.CSS_SELECTOR, '#location .locality')

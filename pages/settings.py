@@ -5,7 +5,6 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import random
-
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.select import Select
@@ -106,6 +105,7 @@ class Settings(Base):
 
             def click_update(self):
                 self._root_element.find_element(*self._update_locator).click()
+                self.wait_for_page_loaded()
 
         class DeleteAccount(PageRegion):
 
@@ -149,6 +149,7 @@ class Settings(Base):
 
             def click_update(self):
                 self._root_element.find_element(*self._update_locator).click()
+                self.wait_for_page_loaded()
 
     class YouAndMozilla(PageRegion):
 
@@ -207,6 +208,7 @@ class Settings(Base):
 
             def click_update(self):
                 self._root_element.find_element(*self._update_locator).click()
+                self.wait_for_page_loaded()
 
     class Groups(PageRegion):
 
@@ -267,6 +269,7 @@ class Settings(Base):
 
             def click_update(self):
                 self._root_element.find_element(*self._update_locator).click()
+                self.wait_for_page_loaded()
 
     class DeveloperTab(PageRegion):
 
