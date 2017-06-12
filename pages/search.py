@@ -13,7 +13,7 @@ from pages.page import PageRegion
 
 class Search(Base):
 
-    _result_locator = (By.CSS_SELECTOR, '#content-wrapper > #main > div.row > div.result')
+    _result_locator = (By.CSS_SELECTOR, '#content-wrapper > #main div.result')
     _search_button_locator = (By.CSS_SELECTOR, 'button[type = "submit"]')
     _advanced_options_button_locator = (By.CSS_SELECTOR, '.btn.primary:nth-of-type(2)')
     _advanced_options_locator = (By.CSS_SELECTOR, '.search-options')
@@ -68,7 +68,7 @@ class Search(Base):
 
     class SearchResult(PageRegion):
 
-        _profile_page_link_locator = (By.CSS_SELECTOR, 'a')
+        _profile_page_link_locator = (By.CSS_SELECTOR, 'li a')
         _name_locator = (By.CSS_SELECTOR, '.result .details h2')
 
         def open_profile_page(self):
