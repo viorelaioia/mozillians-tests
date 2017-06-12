@@ -158,8 +158,7 @@ class Settings(Base):
 
             def click_update(self):
                 self._root_element.find_element(*self._update_locator).click()
-                self.wait_for_element_not_present(*self._update_locator)
-                self.wait_for_element_present(*self._update_locator)
+                self.wait_for_page_loaded()
 
     class YouAndMozilla(PageRegion):
 
