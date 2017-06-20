@@ -10,7 +10,6 @@ import pytest
 import requests
 
 from pages.home_page import Home
-from pages.profile import Profile
 
 
 class TestSearch:
