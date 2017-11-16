@@ -78,10 +78,11 @@ class Register(Base):
     def check_recaptcha(self):
         recaptcha_iframe_locator = (By.CSS_SELECTOR, '.g-recaptcha iframe')
         recaptcha_iframe = self.find_element(*recaptcha_iframe_locator)
+        self.selenium.execute_script("arguments[0].scrollIntoView();", recaptcha_iframe)
+        # To be removed when bug https://bugzilla.mozilla.org/show_bug.cgi?id=1314462 is fixed
         self.selenium.switch_to_frame(recaptcha_iframe)
-        recaptcha_checkbox = self.find_element(*self._recaptcha_checkbox_locator)
-        self.selenium.execute_script("arguments[0].scrollIntoView();", recaptcha_checkbox)
-        self.find_element(*self._recaptcha_checkbox_locator).click()
+        self.wait.until(expected.visibility_of_element_located(
+            self._recaptcha_checkbox_locator)).click()
         self.wait.until(lambda s: self.find_element(*self._recaptcha_checkbox_checked))
         self.selenium.switch_to_default_content()
 
