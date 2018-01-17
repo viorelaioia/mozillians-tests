@@ -6,7 +6,7 @@ def capabilities = [
 ]
 
 pipeline {
-  agent agent {label 'mesos-testing'}
+  agent {label 'mesos-testing'}
   libraries {
     lib('fxtest@1.9')
   }
