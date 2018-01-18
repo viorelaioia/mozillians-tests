@@ -6,7 +6,7 @@ def capabilities = [
 ]
 
 pipeline {
-  agent {label 'mesos'}
+  agent {label 'mesos-testing'}
   libraries {
     lib('fxtest@1.9')
   }
@@ -19,6 +19,7 @@ pipeline {
     stage('Lint') {
       agent {
         dockerfile true
+        label 'mesos-testing'
       }
       steps {
         sh "flake8"
@@ -27,6 +28,7 @@ pipeline {
     stage('Test') {
       agent {
         dockerfile true
+        label 'mesos-testing'
       }
       environment {
         VARIABLES = credentials('MOZILLIANS_VARIABLES')
