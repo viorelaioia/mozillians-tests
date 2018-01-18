@@ -18,8 +18,9 @@ pipeline {
   stages {
     stage('Lint') {
       agent {
-        dockerfile true
-        label 'mesos-testing'
+        dockerfile {
+          label 'mesos-testing'
+        }
       }
       steps {
         sh "flake8"
@@ -27,8 +28,9 @@ pipeline {
     }
     stage('Test') {
       agent {
-        dockerfile true
-        label 'mesos-testing'
+        dockerfile {
+          label 'mesos-testing'
+        }
       }
       environment {
         VARIABLES = credentials('MOZILLIANS_VARIABLES')
