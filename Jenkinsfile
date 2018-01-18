@@ -6,9 +6,9 @@ def capabilities = [
 ]
 
 pipeline {
-  agent {label 'mesos-testing'}
+  agent any
   libraries {
-    lib('fxtest@1.9')
+    lib('fxtest@1.10')
   }
   options {
     ansiColor('xterm')
@@ -18,9 +18,7 @@ pipeline {
   stages {
     stage('Lint') {
       agent {
-        dockerfile {
-          label 'mesos-testing'
-        }
+        dockerfile true
       }
       steps {
         sh "flake8"
@@ -28,9 +26,7 @@ pipeline {
     }
     stage('Test') {
       agent {
-        dockerfile {
-          label 'mesos-testing'
-        }
+        dockerfile true
       }
       environment {
         VARIABLES = credentials('MOZILLIANS_VARIABLES')
@@ -58,6 +54,8 @@ pipeline {
           stash includes: 'results/*', name: 'results'
           archiveArtifacts 'results/*'
           junit 'results/*.xml'
+          submitToActiveData('results/raw.txt')
+          submitToTreeherder('mozillians-tests', 'e2e', 'End-to-end integration tests', 'results/*', 'results/tbpl.txt')
         }
       }
     }
@@ -72,6 +70,18 @@ pipeline {
         reportDir: 'results',
         reportFiles: 'index.html',
         reportName: 'HTML Report'])
+    }
+    changed {
+      ircNotification()
+    }
+    failure {
+      emailext(
+        attachLog: true,
+        attachmentsPattern: 'results/index.html',
+        body: '$BUILD_URL\n\n$FAILED_TESTS',
+        replyTo: '$DEFAULT_REPLYTO',
+        subject: '$DEFAULT_SUBJECT',
+        to: '$DEFAULT_RECIPIENTS')
     }
   }
 }

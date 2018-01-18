@@ -29,7 +29,7 @@ also point you in the right direction if you need to ask questions.
 
 ### Clone the repository
 
-If you have cloned this project already then you can skip this, otherwise
+If you have cloned this project already, then you can skip this; otherwise
 you'll need to clone this repo using Git. If you do not know how to clone a
 GitHub repository, check out this [help page][git clone] from GitHub.
 
@@ -63,7 +63,7 @@ as many vouched users as you intend to have tests running in parallel.
           "username": "vouched",
           "email": "vouched@example.com",
           "name": "Vouched User"
-        },
+        }
       ],
       "unvouched": {
         "username": "unvouched",
@@ -80,20 +80,42 @@ as many vouched users as you intend to have tests running in parallel.
 }
 ```
 
-### Run the tests
+Then you can run the tests using [Docker][]:
 
-You will need to [install tox][] and then set the path to your variables file
-by adding it to the `PYTEST_ADDOPTS` environment variable:
-
-```sh
-$ PYTEST_ADDOPTS="--variables=/path/to/variables.json"
+```bash
+  $ docker build -t mozillians-tests .
+  $ docker run -it \
+    --mount type=bind,source=/path/to/variables.json,destination=/variables.json,readonly \
+    mozillians-tests
 ```
 
-Then you can run the tests using:
+### Run the tests using Sauce Labs
 
-```sh
-$ tox
+You will need a [Sauce Labs][] account, with a `.saucelabs` file in your home
+directory containing your username and API key, as follows:
+
+```ini
+[credentials]
+username = username
+key = secret
 ```
+
+Then you can run the tests against Sauce Labs using [Docker][] by passing the
+`--driver SauceLabs` argument as shown below. The `--mount` argument is
+important, as it allows your `.saucelabs` file to be accessed by the Docker
+container:
+
+```bash
+$ docker build -t mozillians-tests .
+$ docker run -it \
+  --mount type=bind,source=$HOME/.saucelabs,destination=/src/.saucelabs,readonly \
+  --mount type=bind,source=/path/to/variables.json,destination=/variables.json,readonly \
+  mozillians-tests --variables /variables.json \
+  --driver SauceLabs --capability browserName Chrome
+```
+
+See the documentation on [specifying capabilities][] and the Sauce Labs
+[platform configurator][] for selecting the target platform.
 
 ## Writing tests
 
@@ -105,9 +127,12 @@ things we'd like to ask you to do:
 3. Make sure all tests are passing, and submit a pull request.
 4. Always feel free to reach out to us and ask questions.
 
+[sauce labs]: https://saucelabs.com/
+[Docker]: https://www.docker.com
 [guide]: http://firefox-test-engineering.readthedocs.io/en/latest/guide/index.html
 [git clone]: https://help.github.com/articles/cloning-a-repository/
 [git fork]: https://help.github.com/articles/fork-a-repo/
 [staging]: https://web-mozillians-staging.production.paas.mozilla.community/
-[install tox]: https://tox.readthedocs.io/en/latest/install.html
+[specifying capabilities]: http://pytest-selenium.readthedocs.io/en/latest/user_guide.html#specifying-capabilities
+[platform configurator]: http://pytest-selenium.readthedocs.io/en/latest/user_guide.html#specifying-capabilities
 [style guide]: https://wiki.mozilla.org/QA/Execution/Web_Testing/Docs/Automation/StyleGuide
