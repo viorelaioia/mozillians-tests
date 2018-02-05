@@ -29,7 +29,7 @@ also point you in the right direction if you need to ask questions.
 
 ### Clone the repository
 
-If you have cloned this project already then you can skip this, otherwise
+If you have cloned this project already, then you can skip this; otherwise
 you'll need to clone this repo using Git. If you do not know how to clone a
 GitHub repository, check out this [help page][git clone] from GitHub.
 
@@ -41,52 +41,81 @@ for [forking a repository][git fork].
 ### Create test variables files
 
 Some of the tests require credentials associated with account with specific
-access levels. Create three username and password combinations on [staging][].
-
-Join #commtools on IRC and ask for two of these users to be vouched (or ask
-someone on #fx-test to do this for you). In one of the vouched users' profiles,
-join at least one group and mark groups as private.
+access levels. Create at least three users on [staging][]. Vouch at least two
+of these users by adding '/vouch' to the end of the profile URL for each user.
+In one of the vouched users' profiles, join at least one group and mark groups
+as private.
 
 Create a file outside of the project (to avoid accidentally exposing the
 credentials) with the following format. You will reference this file when
 running the tests using the `--variables` command line option.
 
+Note that the `vouched` key is a list. This is so that multiple vouched users
+can be used when running the tests in parallel. It's recommended that you have
+as many vouched users as you intend to have tests running in parallel.
+
 ```json
 {
-  "users": {
-    "vouched": {
-      "email": "vouched@example.com",
-      "password": "password",
-      "name": "Vouched User"
-    },
-    "unvouched": {
-      "email": "unvouced@example.com",
-      "password": "password",
-      "name": "Unvouched User"
-    },
-    "private": {
-      "email": "private@example.com",
-      "password": "password",
-      "name": "Private User"
+  "web-mozillians-staging.production.paas.mozilla.community": {
+    "users": {
+      "vouched": [
+        {
+          "username": "vouched",
+          "email": "vouched@example.com",
+          "name": "Vouched User"
+        }
+      ],
+      "unvouched": {
+        "username": "unvouched",
+        "email": "unvouched@example.com",
+        "name": "Unvouched User"
+      },
+      "private": {
+        "username": "private",
+        "email": "private@example.com",
+        "name": "Private User"
+      }
     }
   }
 }
 ```
 
-### Run the tests
+Then you can run the tests using [Docker][]:
 
-You will need to [install tox][] and then set the path to your variables file
-by adding it to the `PYTEST_ADDOPTS` environment variable:
-
-```sh
-$ PYTEST_ADDOPTS="--variables=/path/to/variables.json"
+```bash
+  $ docker build -t mozillians-tests .
+  $ docker run -it \
+    --mount type=bind,source=/path/to/variables.json,destination=/variables.json,readonly \
+    mozillians-tests
 ```
 
-Then you can run the tests using:
+### Run the tests using Sauce Labs
 
-```sh
-$ tox
+You will need a [Sauce Labs][] account, with a `.saucelabs` file in your home
+directory containing your username and API key, as follows:
+
+```ini
+[credentials]
+username = username
+key = secret
 ```
+
+Then you can run the tests against Sauce Labs using [Docker][] by passing the
+`--driver SauceLabs` argument as shown below. The `--mount` argument is
+important, as it allows your `.saucelabs` file to be accessed by the Docker
+container:
+
+```bash
+$ docker build -t mozillians-tests .
+$ docker run -it \
+  --mount type=bind,source=$HOME/.saucelabs,destination=/src/.saucelabs,readonly \
+  --mount type=bind,source=/path/to/variables.json,destination=/variables.json,readonly \
+  mozillians-tests --variables /variables.json \
+  --driver SauceLabs --capability browserName Firefox
+```
+
+See the documentation on [specifying capabilities][] and the Sauce Labs
+[platform configurator][] for selecting the target platform.
 
 ## Writing tests
 
@@ -98,9 +127,12 @@ things we'd like to ask you to do:
 3. Make sure all tests are passing, and submit a pull request.
 4. Always feel free to reach out to us and ask questions.
 
+[sauce labs]: https://saucelabs.com/
+[Docker]: https://www.docker.com
 [guide]: http://firefox-test-engineering.readthedocs.io/en/latest/guide/index.html
 [git clone]: https://help.github.com/articles/cloning-a-repository/
 [git fork]: https://help.github.com/articles/fork-a-repo/
 [staging]: https://web-mozillians-staging.production.paas.mozilla.community/
-[install tox]: https://tox.readthedocs.io/en/latest/install.html
+[specifying capabilities]: http://pytest-selenium.readthedocs.io/en/latest/user_guide.html#specifying-capabilities
+[platform configurator]: http://pytest-selenium.readthedocs.io/en/latest/user_guide.html#specifying-capabilities
 [style guide]: https://wiki.mozilla.org/QA/Execution/Web_Testing/Docs/Automation/StyleGuide
