@@ -22,6 +22,12 @@
         "username": "",
         "password": "",
         "secret": ""
+      },
+      "ldap_user": {
+        "email": "",
+        "password": "",
+        "secret": "",
+        "counter_API": ""
       }
     }
   }

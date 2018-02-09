@@ -25,8 +25,10 @@ class GroupsPage(Base):
     def is_group_deletion_alert_present(self):
         return self.is_element_displayed(*self._alert_message_locator)
 
-    def create_group(self, group_name):
+    def create_group(self, group_name, group_type='Open', access_type='Tag'):
         create_group = self.click_create_group_main_button()
         create_group.create_group_name(group_name)
+        create_group.set_group_type(group_type)
+        create_group.set_access_type(access_type)
         group = create_group.click_create_group_submit()
         return group

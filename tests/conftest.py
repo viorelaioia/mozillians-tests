@@ -61,6 +61,11 @@ def github_non_nda_user(stored_users):
     return stored_users['github_non_nda']
 
 
+@pytest.fixture(scope='session')
+def ldap(stored_users):
+    return stored_users['ldap_user']
+
+
 @pytest.fixture
 def login_link(username):
     mail = restmail.get_mail(username)

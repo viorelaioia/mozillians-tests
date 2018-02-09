@@ -66,6 +66,11 @@ class Base(Page):
         github = auth0.click_login_with_github()
         github.login_with_github(username, password, secret)
 
+    def login_with_ldap(self, email, password, counter_api, secret):
+        self.click_sign_in_button()
+        auth0 = Auth0(self.selenium, self.base_url)
+        auth0.login_with_ldap(email, password, counter_api, secret)
+
     def create_new_user(self, email):
         self.login(email)
         from pages.register import Register

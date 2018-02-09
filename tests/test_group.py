@@ -102,3 +102,39 @@ class TestGroup:
         groups_page = home_page.header.click_groups_menu_item()
         create_group_page = groups_page.click_create_group_main_button()
         assert not create_group_page.is_access_group_present
+
+    @pytest.mark.credentials
+    def test_cannot_invite_github_non_nda_user_to_access_group(self, base_url, selenium, ldap, github_non_nda_user):
+        home_page = Home(selenium, base_url).open()
+        home_page.login_with_ldap(ldap['email'], ldap['password'], ldap['counter_API'], ldap['secret'])
+
+        # Create a new group of type "Reviewed" and access "Access group"
+        group_name = 'moz-group-access-{0}'.format(uuid.uuid4())
+        groups_page = home_page.header.click_groups_menu_item()
+        group = groups_page.create_group(group_name, "Reviewed", "Access Group")
+        assert "Reviewed" in group.access.group_type.current_group_type
+        assert "Access Group" in group.access.access_form.selected_access_type
+
+        # Try to invite a non nda user to the access group
+        user = github_non_nda_user['name']
+        invite_form = group.invitations.invite
+        invite_form.search_for_member(user)
+        assert user not in invite_form.invites_results
+
+    @pytest.mark.credentials
+    def test_cannot_add_github_non_nda_as_access_group_curator(self, base_url, selenium, ldap, github_non_nda_user):
+        home_page = Home(selenium, base_url).open()
+        home_page.login_with_ldap(ldap['email'], ldap['password'], ldap['counter_API'], ldap['secret'])
+
+        # Create a new group of type "Reviewed" and access "Access group"
+        group_name = 'moz-group-access-{0}'.format(uuid.uuid4())
+        groups_page = home_page.header.click_groups_menu_item()
+        group = groups_page.create_group(group_name, "Reviewed", "Access Group")
+        assert "Reviewed" in group.access.group_type.current_group_type
+        assert "Access Group" in group.access.access_form.selected_access_type
+
+        # Try to add a non nda user as curator of the access group
+        user = github_non_nda_user['name']
+        curators_form = group.access.curators_form
+        curators_form.search_for_curator(user)
+        assert user not in curators_form.curators_list
