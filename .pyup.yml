@@ -1,2 +1,4 @@
+schedule: "every week on monday"
 requirements:
   - Pipfile
+  - pipenv.txt
