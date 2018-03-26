@@ -1,7 +1,9 @@
+#!/usr/bin/env groovy
+
 /** Desired capabilities */
 def capabilities = [
   browserName: 'Firefox',
-  version: '58.0',
+  version: '59.0',
   platform: 'Windows 10'
 ]
 
@@ -9,6 +11,10 @@ pipeline {
   agent any
   libraries {
     lib('fxtest@1.10')
+  }
+  triggers {
+    pollSCM('H/5 * * * *')
+    cron('H H * * *')
   }
   options {
     ansiColor('xterm')

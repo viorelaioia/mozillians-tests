@@ -21,11 +21,6 @@ class Auth0(Page):
     _enter_passcode_button_locator = (By.CSS_SELECTOR, '.passcode-label .positive.auth-button')
     _passcode_field_locator = (By.CSS_SELECTOR, '.passcode-label input[name="passcode"]')
 
-    def __new__(cls, driver, base_url, **kwargs):
-        if 'mozillians.org' in base_url:
-            return Legacy(driver, base_url, **kwargs)
-        return super(Auth0, cls).__new__(cls)
-
     def request_login_link(self, username):
         self.wait.until(expected.visibility_of_element_located(
             self._email_locator)).send_keys(username)
@@ -56,17 +51,3 @@ class Auth0(Page):
         passcode_field.send_keys(passcode)
         self.find_element(*self._enter_passcode_button_locator).click()
         self.selenium.switch_to_default_content()
-
-
-class Legacy(Page):
-
-    _login_with_email_button_locator = (By.CSS_SELECTOR, '.auth0-lock-passwordless-button.auth0-lock-passwordless-big-button')
-    _email_input_locator = (By.CSS_SELECTOR, '.auth0-lock-passwordless-pane>div>div>input')
-    _send_email_button_locator = (By.CSS_SELECTOR, '.auth0-lock-passwordless-submit')
-
-    def request_login_link(self, username):
-        self.wait.until(expected.visibility_of_element_located(
-            self._login_with_email_button_locator)).click()
-        self.wait.until(expected.visibility_of_element_located(
-            self._email_input_locator)).send_keys(username)
-        self.find_element(*self._send_email_button_locator).click()
