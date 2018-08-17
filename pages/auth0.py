@@ -11,10 +11,10 @@ from pages.github import Github
 
 class Auth0(Page):
 
-    _email_locator = (By.ID, 'field-email')
-    _enter_locator = (By.ID, 'enter-initial')
+    _email_locator = (By.ID, 'field-email-signup')
+    _enter_locator = (By.ID, 'enter-initial-signup')
     _send_email_locator = (By.CSS_SELECTOR, 'button[data-handler=send-passwordless-link]')
-    _login_with_github_button_locator = (By.CSS_SELECTOR, 'button[data-handler="authorise-github"]')
+    _login_with_github_button_locator = (By.CSS_SELECTOR, '#initial-login-signup button[data-handler="authorise-github"]')
 
     def request_login_link(self, username):
         self.wait.until(expected.visibility_of_element_located(
