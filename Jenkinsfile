@@ -1,9 +1,11 @@
 #!/usr/bin/env groovy
 
+def branch = env.BRANCH_NAME ?: 'master'
+
 /** Desired capabilities */
 def capabilities = [
   browserName: 'Firefox',
-  version: '59.0',
+  version: '61.0',
   platform: 'Windows 10'
 ]
 
@@ -13,8 +15,8 @@ pipeline {
     lib('fxtest@1.10')
   }
   triggers {
-    pollSCM('H/5 * * * *')
-    cron('H H * * *')
+    pollSCM(branch == 'master' ? 'H/5 * * * *' : '')
+    cron(branch == 'master' ? 'H H * * *' : '')
   }
   options {
     ansiColor('xterm')

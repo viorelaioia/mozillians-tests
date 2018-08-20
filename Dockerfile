@@ -16,7 +16,7 @@ COPY pipenv.txt /src
 RUN curl -fsSL https://bootstrap.pypa.io/get-pip.py | python2.7
 RUN pip install -r pipenv.txt
 
-ENV FIREFOX_VERSION=59.0
+ENV FIREFOX_VERSION=61.0
 
 RUN curl -fsSLo /tmp/firefox.tar.bz2 https://download-installer.cdn.mozilla.net/pub/firefox/releases/$FIREFOX_VERSION/linux-x86_64/en-US/firefox-$FIREFOX_VERSION.tar.bz2 \
   && apt-get -y purge firefox \
@@ -26,7 +26,7 @@ RUN curl -fsSLo /tmp/firefox.tar.bz2 https://download-installer.cdn.mozilla.net/
   && mv /opt/firefox /opt/firefox-$FIREFOX_VERSION \
   && ln -fs /opt/firefox-$FIREFOX_VERSION/firefox /usr/bin/firefox
 
-ENV GECKODRIVER_VERSION=0.20.0
+ENV GECKODRIVER_VERSION=0.21.0
 RUN curl -fsSLo /tmp/geckodriver.tar.gz https://github.com/mozilla/geckodriver/releases/download/v$GECKODRIVER_VERSION/geckodriver-v$GECKODRIVER_VERSION-linux64.tar.gz \
   && rm -rf /opt/geckodriver \
   && tar -C /opt -zxf /tmp/geckodriver.tar.gz \
